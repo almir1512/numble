@@ -887,8 +887,18 @@
         shareResults() {
           if (this.gameState === "playing") return;
 
-          const today = new Date().toLocaleDateString();
-          let shareText = `Numble ${today}\n`;
+          // Choose the date you launched your first Numble
+          const startDate = new Date("2025-11-05"); // YYYY-MM-DD
+
+          // Get today's date
+          const today = new Date();
+
+          // Calculate difference in days since launch
+          const dayNumber =
+            Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
+          // Create share text
+          let shareText = `Numble ${dayNumber}\n`;
 
           if (this.gameState === "won") {
             shareText += `${this.currentRow + 1}/${this.MAX_ATTEMPTS}\n\n`;
