@@ -1,951 +1,999 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Numble - Daily Number Challenge</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
-            background-color: #121213;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+          "Helvetica", "Arial", sans-serif;
+        background-color: #121213;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+      }
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            max-width: 500px;
-            margin: 0 auto;
-            width: 100%;
-        }
+      .container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        max-width: 500px;
+        margin: 0 auto;
+        width: 100%;
+      }
 
-        .header {
-            border-bottom: 1px solid #3a3a3c;
-            padding: 15px 0;
-            text-align: center;
-            position: relative;
-        }
+      .header {
+        border-bottom: 1px solid #3a3a3c;
+        padding: 15px 0;
+        text-align: center;
+        position: relative;
+      }
 
-        .header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
+      .header h1 {
+        font-size: 32px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
 
-        .header p {
-            font-size: 12px;
-            color: #818384;
-            margin-top: 5px;
-        }
+      .header p {
+        font-size: 12px;
+        color: #818384;
+        margin-top: 5px;
+      }
 
-        .game-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px 10px 10px 10px;
-            overflow: hidden;
-        }
+      .game-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 20px 10px 10px 10px;
+        overflow: hidden;
+      }
 
-        .board-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex: 1;
-            padding: 10px 0;
-        }
+      .board-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+        padding: 10px 0;
+      }
 
-        .board {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
+      .board {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
 
-        .row {
-            display: flex;
-            gap: 5px;
-        }
+      .row {
+        display: flex;
+        gap: 5px;
+      }
 
+      .tile {
+        width: 62px;
+        height: 62px;
+        border: 2px solid #3a3a3c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: bold;
+        text-transform: uppercase;
+        user-select: none;
+        transition: border-color 0.1s ease;
+      }
+
+      .tile.filled {
+        border-color: #565758;
+        animation: pop 0.1s ease;
+      }
+
+      .tile.tbd {
+        background-color: #121213;
+        border-color: #565758;
+        color: #ffffff;
+      }
+
+      @keyframes pop {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .tile.reveal {
+        animation: flip 0.6s ease forwards;
+      }
+
+      @keyframes flip {
+        0% {
+          transform: rotateX(0);
+        }
+        50% {
+          transform: rotateX(90deg);
+        }
+        100% {
+          transform: rotateX(0);
+        }
+      }
+
+      .tile.correct {
+        background-color: #538d4e;
+        border-color: #538d4e;
+        color: #ffffff;
+      }
+
+      .tile.present {
+        background-color: #b59f3b;
+        border-color: #b59f3b;
+        color: #ffffff;
+      }
+
+      .tile.absent {
+        background-color: #3a3a3c;
+        border-color: #3a3a3c;
+        color: #ffffff;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          transform: translateX(-5px);
+        }
+        20%,
+        40%,
+        60%,
+        80% {
+          transform: translateX(5px);
+        }
+      }
+
+      .row.shake {
+        animation: shake 0.5s ease;
+      }
+
+      @keyframes jump {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .tile.win {
+        animation: jump 0.5s ease;
+      }
+
+      .keyboard-container {
+        padding: 10px 8px;
+        user-select: none;
+      }
+
+      .keyboard {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .keyboard-row {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+      }
+
+      .key {
+        min-width: 43px;
+        height: 58px;
+        background-color: #818384;
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.1s ease;
+        flex: 1;
+        max-width: 65px;
+      }
+
+      .key:hover {
+        opacity: 0.8;
+      }
+
+      .key:active {
+        opacity: 0.6;
+      }
+
+      .key.large {
+        flex: 1.5;
+        font-size: 14px;
+        text-transform: uppercase;
+      }
+
+      .key.correct {
+        background-color: #538d4e;
+      }
+
+      .key.present {
+        background-color: #b59f3b;
+      }
+
+      .key.absent {
+        background-color: #3a3a3c;
+      }
+
+      .message-container {
+        position: fixed;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+      }
+
+      .message {
+        background-color: #ffffff;
+        color: #000000;
+        padding: 16px 24px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        animation: slideDown 0.3s ease;
+        display: none;
+      }
+
+      .message.show {
+        display: block;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .stats-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+      }
+
+      .stats-overlay.show {
+        display: flex;
+      }
+
+      .stats-content {
+        background-color: #121213;
+        padding: 32px;
+        border-radius: 8px;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      }
+
+      .stats-title {
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 24px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .stat {
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 36px;
+        font-weight: bold;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: #818384;
+        margin-top: 4px;
+      }
+
+      .button {
+        width: 100%;
+        padding: 16px;
+        background-color: #538d4e;
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+
+      .button:hover {
+        background-color: #467a3f;
+      }
+
+      .countdown {
+        text-align: center;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #3a3a3c;
+        color: #818384;
+        font-size: 14px;
+      }
+
+      .countdown-timer {
+        font-size: 24px;
+        font-weight: bold;
+        color: #ffffff;
+        margin-top: 8px;
+      }
+
+      .menu-icon {
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        cursor: pointer;
+        padding: 8px;
+      }
+
+      .menu-icon svg {
+        width: 24px;
+        height: 24px;
+        fill: #ffffff;
+      }
+
+      .share-button {
+        margin-top: 16px;
+        background-color: transparent;
+        border: 2px solid #538d4e;
+        color: #538d4e;
+      }
+
+      .share-button:hover {
+        background-color: rgba(83, 141, 78, 0.1);
+      }
+
+      @media (max-width: 480px) {
         .tile {
-            width: 62px;
-            height: 62px;
-            border: 2px solid #3a3a3c;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            font-weight: bold;
-            text-transform: uppercase;
-            user-select: none;
-            transition: border-color 0.1s ease;
-        }
-
-        .tile.filled {
-            border-color: #565758;
-            animation: pop 0.1s ease;
-        }
-
-        .tile.tbd {
-            background-color: #121213;
-            border-color: #565758;
-            color: #ffffff;
-        }
-
-        @keyframes pop {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .tile.reveal {
-            animation: flip 0.6s ease forwards;
-        }
-
-        @keyframes flip {
-            0% {
-                transform: rotateX(0);
-            }
-            50% {
-                transform: rotateX(90deg);
-            }
-            100% {
-                transform: rotateX(0);
-            }
-        }
-
-        .tile.correct {
-            background-color: #538d4e;
-            border-color: #538d4e;
-            color: #ffffff;
-        }
-
-        .tile.present {
-            background-color: #b59f3b;
-            border-color: #b59f3b;
-            color: #ffffff;
-        }
-
-        .tile.absent {
-            background-color: #3a3a3c;
-            border-color: #3a3a3c;
-            color: #ffffff;
-        }
-
-        @keyframes shake {
-            0%, 100% {
-                transform: translateX(0);
-            }
-            10%, 30%, 50%, 70%, 90% {
-                transform: translateX(-5px);
-            }
-            20%, 40%, 60%, 80% {
-                transform: translateX(5px);
-            }
-        }
-
-        .row.shake {
-            animation: shake 0.5s ease;
-        }
-
-        @keyframes jump {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .tile.win {
-            animation: jump 0.5s ease;
-        }
-
-        .keyboard-container {
-            padding: 10px 8px;
-            user-select: none;
-        }
-
-        .keyboard {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .keyboard-row {
-            display: flex;
-            gap: 6px;
-            justify-content: center;
+          width: 56px;
+          height: 56px;
+          font-size: 28px;
         }
 
         .key {
-            min-width: 43px;
-            height: 58px;
-            background-color: #818384;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.1s ease;
-            flex: 1;
-            max-width: 65px;
+          min-width: 38px;
+          height: 52px;
+          font-size: 18px;
         }
-
-        .key:hover {
-            opacity: 0.8;
-        }
-
-        .key:active {
-            opacity: 0.6;
-        }
-
-        .key.large {
-            flex: 1.5;
-            font-size: 14px;
-            text-transform: uppercase;
-        }
-
-        .key.correct {
-            background-color: #538d4e;
-        }
-
-        .key.present {
-            background-color: #b59f3b;
-        }
-
-        .key.absent {
-            background-color: #3a3a3c;
-        }
-
-        .message-container {
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-        }
-
-        .message {
-            background-color: #ffffff;
-            color: #000000;
-            padding: 16px 24px;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-            animation: slideDown 0.3s ease;
-            display: none;
-        }
-
-        .message.show {
-            display: block;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .stats-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .stats-overlay.show {
-            display: flex;
-        }
-
-        .stats-content {
-            background-color: #121213;
-            padding: 32px;
-            border-radius: 8px;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-        }
-
-        .stats-title {
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 36px;
-            font-weight: bold;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #818384;
-            margin-top: 4px;
-        }
-
-        .button {
-            width: 100%;
-            padding: 16px;
-            background-color: #538d4e;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .button:hover {
-            background-color: #467a3f;
-        }
-
-        .countdown {
-            text-align: center;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #3a3a3c;
-            color: #818384;
-            font-size: 14px;
-        }
-
-        .countdown-timer {
-            font-size: 24px;
-            font-weight: bold;
-            color: #ffffff;
-            margin-top: 8px;
-        }
-
-        .menu-icon {
-            position: absolute;
-            right: 20px;
-            top: 15px;
-            cursor: pointer;
-            padding: 8px;
-        }
-
-        .menu-icon svg {
-            width: 24px;
-            height: 24px;
-            fill: #ffffff;
-        }
-
-        .share-button {
-            margin-top: 16px;
-            background-color: transparent;
-            border: 2px solid #538d4e;
-            color: #538d4e;
-        }
-
-        .share-button:hover {
-            background-color: rgba(83, 141, 78, 0.1);
-        }
-
-        @media (max-width: 480px) {
-            .tile {
-                width: 56px;
-                height: 56px;
-                font-size: 28px;
-            }
-            
-            .key {
-                min-width: 38px;
-                height: 52px;
-                font-size: 18px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="header">
-            <h1>NUMBLE</h1>
-            <p>Guess the 4-digit number</p>
-            <div class="menu-icon" onclick="game.showStats()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <rect x="3" y="3" width="7" height="7"/>
-                    <rect x="14" y="3" width="7" height="7"/>
-                    <rect x="14" y="14" width="7" height="7"/>
-                    <rect x="3" y="14" width="7" height="7"/>
-                </svg>
-            </div>
+      <div class="header">
+        <h1>NUMBLE</h1>
+        <p>Guess the 4-digit number</p>
+        <div class="menu-icon" onclick="game.showStats()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="game-section">
+        <div class="board-container">
+          <div class="board" id="board"></div>
         </div>
 
-        <div class="game-section">
-            <div class="board-container">
-                <div class="board" id="board"></div>
-            </div>
-
-            <div class="keyboard-container">
-                <div class="keyboard" id="keyboard"></div>
-            </div>
+        <div class="keyboard-container">
+          <div class="keyboard" id="keyboard"></div>
         </div>
+      </div>
     </div>
 
     <div class="message-container">
-        <div class="message" id="message"></div>
+      <div class="message" id="message"></div>
     </div>
 
-    <div class="stats-overlay" id="statsOverlay" onclick="game.hideStats(event)">
-        <div class="stats-content" onclick="event.stopPropagation()">
-            <div class="stats-title">STATISTICS</div>
-            <div class="stats-grid">
-                <div class="stat">
-                    <div class="stat-value" id="statPlayed">0</div>
-                    <div class="stat-label">Played</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value" id="statWin">0</div>
-                    <div class="stat-label">Win %</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value" id="statCurrent">0</div>
-                    <div class="stat-label">Current Streak</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value" id="statMax">0</div>
-                    <div class="stat-label">Max Streak</div>
-                </div>
-            </div>
-            <button class="button" onclick="game.shareResults()">Share Results</button>
-            <button class="button share-button" onclick="game.hideStats()">Close</button>
-            <div class="countdown">
-                <div>NEXT NUMBLE</div>
-                <div class="countdown-timer" id="countdown">--:--:--</div>
-            </div>
+    <div
+      class="stats-overlay"
+      id="statsOverlay"
+      onclick="game.hideStats(event)"
+    >
+      <div class="stats-content" onclick="event.stopPropagation()">
+        <div class="stats-title">STATISTICS</div>
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="stat-value" id="statPlayed">0</div>
+            <div class="stat-label">Played</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="statWin">0</div>
+            <div class="stat-label">Win %</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="statCurrent">0</div>
+            <div class="stat-label">Current Streak</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="statMax">0</div>
+            <div class="stat-label">Max Streak</div>
+          </div>
         </div>
+        <button class="button" onclick="game.shareResults()">
+          Share Results
+        </button>
+        <button class="button share-button" onclick="game.hideStats()">
+          Close
+        </button>
+        <div class="countdown">
+          <div>NEXT NUMBLE</div>
+          <div class="countdown-timer" id="countdown">--:--:--</div>
+        </div>
+      </div>
     </div>
 
     <script>
-        // Configuration - Set this to your backend API URL when deployed
-        const API_URL = ''; // Leave empty for standalone mode, or use 'https://your-api.com' for backend mode
+      // Configuration - Set this to your backend API URL when deployed
+      const API_URL = ""; // Leave empty for standalone mode, or use 'https://your-api.com' for backend mode
 
-        class NumbleGame {
-            constructor() {
-                this.DIGITS = 4;
-                this.MAX_ATTEMPTS = 4;
-                this.currentRow = 0;
-                this.currentTile = 0;
-                this.currentGuess = [];
-                this.gameState = 'playing'; // playing, won, lost
-                this.keyStates = {};
-                this.guessHistory = [];
-                
-                this.init();
-            }
+      class NumbleGame {
+        constructor() {
+          this.DIGITS = 4;
+          this.MAX_ATTEMPTS = 4;
+          this.currentRow = 0;
+          this.currentTile = 0;
+          this.currentGuess = [];
+          this.gameState = "playing"; // playing, won, lost
+          this.keyStates = {};
+          this.guessHistory = [];
 
-            async init() {
-                await this.loadDailyNumber();
-                this.createBoard();
-                this.createKeyboard();
-                this.attachEventListeners();
-                this.updateCountdown();
-                setInterval(() => this.updateCountdown(), 1000);
-                
-                // Check if already played today
-                this.checkDailyProgress();
-            }
-
-            async loadDailyNumber() {
-                if (API_URL) {
-                    try {
-                        const response = await fetch(`${API_URL}/api/daily-number?digits=${this.DIGITS}`);
-                        const data = await response.json();
-                        this.targetNumber = data.number;
-                        this.currentDate = data.date;
-                    } catch (error) {
-                        console.error('Failed to fetch from API, using local generation:', error);
-                        this.targetNumber = this.getDailyNumberLocal();
-                    }
-                } else {
-                    this.targetNumber = this.getDailyNumberLocal();
-                }
-                
-                console.log('Daily number:', this.targetNumber); // For testing
-            }
-
-            getDailyNumberLocal() {
-                const today = new Date();
-                const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
-                
-                const random = (seed) => {
-                    const x = Math.sin(seed) * 10000;
-                    return x - Math.floor(x);
-                };
-                
-                let number = '';
-                for (let i = 0; i < this.DIGITS; i++) {
-                    number += Math.floor(random(seed + i) * 10);
-                }
-                
-                return number;
-            }
-
-            checkDailyProgress() {
-                const today = new Date().toISOString().split('T')[0];
-                const saved = localStorage.getItem('numbleProgress');
-                
-                if (saved) {
-                    const progress = JSON.parse(saved);
-                    if (progress.date === today && progress.completed) {
-                        this.restoreGame(progress);
-                    }
-                }
-            }
-
-            restoreGame(progress) {
-                this.gameState = progress.gameState;
-                this.currentRow = progress.currentRow;
-                this.guessHistory = progress.guessHistory || [];
-                this.keyStates = progress.keyStates || {};
-                
-                // Restore board state
-                this.guessHistory.forEach((guess, rowIndex) => {
-                    for (let i = 0; i < this.DIGITS; i++) {
-                        const tile = this.getTile(rowIndex, i);
-                        tile.textContent = guess.digits[i];
-                        tile.classList.add(guess.feedback[i]);
-                    }
-                });
-                
-                // Restore keyboard state
-                this.createKeyboard();
-                
-                if (this.gameState !== 'playing') {
-                    setTimeout(() => this.showStats(), 500);
-                }
-            }
-
-            saveProgress() {
-                const today = new Date().toISOString().split('T')[0];
-                const progress = {
-                    date: today,
-                    gameState: this.gameState,
-                    currentRow: this.currentRow,
-                    guessHistory: this.guessHistory,
-                    keyStates: this.keyStates,
-                    completed: this.gameState !== 'playing'
-                };
-                localStorage.setItem('numbleProgress', JSON.stringify(progress));
-            }
-
-            createBoard() {
-                const board = document.getElementById('board');
-                board.innerHTML = '';
-                
-                for (let i = 0; i < this.MAX_ATTEMPTS; i++) {
-                    const row = document.createElement('div');
-                    row.className = 'row';
-                    row.dataset.row = i;
-                    
-                    for (let j = 0; j < this.DIGITS; j++) {
-                        const tile = document.createElement('div');
-                        tile.className = 'tile';
-                        tile.dataset.row = i;
-                        tile.dataset.col = j;
-                        row.appendChild(tile);
-                    }
-                    
-                    board.appendChild(row);
-                }
-            }
-
-            createKeyboard() {
-                const keyboard = document.getElementById('keyboard');
-                const layout = [
-                    ['1', '2', '3'],
-                    ['4', '5', '6'],
-                    ['7', '8', '9'],
-                    ['ENTER', '0', 'DELETE']
-                ];
-
-                keyboard.innerHTML = '';
-                layout.forEach(row => {
-                    const keyRow = document.createElement('div');
-                    keyRow.className = 'keyboard-row';
-                    
-                    row.forEach(key => {
-                        const keyElement = document.createElement('button');
-                        keyElement.className = 'key';
-                        keyElement.textContent = key;
-                        keyElement.dataset.key = key;
-                        
-                        if (key === 'ENTER' || key === 'DELETE') {
-                            keyElement.classList.add('large');
-                        }
-                        
-                        // Apply saved key state
-                        if (this.keyStates[key]) {
-                            keyElement.classList.add(this.keyStates[key]);
-                        }
-                        
-                        keyRow.appendChild(keyElement);
-                    });
-                    
-                    keyboard.appendChild(keyRow);
-                });
-            }
-
-            attachEventListeners() {
-                document.getElementById('keyboard').addEventListener('click', (e) => {
-                    if (e.target.classList.contains('key')) {
-                        this.handleInput(e.target.dataset.key);
-                    }
-                });
-
-                document.addEventListener('keydown', (e) => {
-                    if (this.gameState !== 'playing') return;
-                    
-                    if (e.key >= '0' && e.key <= '9') {
-                        this.handleInput(e.key);
-                    } else if (e.key === 'Backspace') {
-                        this.handleInput('DELETE');
-                    } else if (e.key === 'Enter') {
-                        this.handleInput('ENTER');
-                    }
-                });
-            }
-
-            handleInput(key) {
-                if (this.gameState !== 'playing') return;
-
-                if (key === 'ENTER') {
-                    this.submitGuess();
-                } else if (key === 'DELETE') {
-                    this.deleteLast();
-                } else if (this.currentTile < this.DIGITS) {
-                    this.addDigit(key);
-                }
-            }
-
-            addDigit(digit) {
-                if (this.currentTile >= this.DIGITS) return;
-                
-                const tile = this.getTile(this.currentRow, this.currentTile);
-                tile.textContent = digit;
-                tile.classList.add('filled');
-                
-                this.currentGuess.push(digit);
-                this.currentTile++;
-            }
-
-            deleteLast() {
-                if (this.currentTile === 0) return;
-                
-                this.currentTile--;
-                const tile = this.getTile(this.currentRow, this.currentTile);
-                tile.textContent = '';
-                tile.classList.remove('filled');
-                
-                this.currentGuess.pop();
-            }
-
-            async submitGuess() {
-                if (this.currentTile !== this.DIGITS) {
-                    this.showMessage('Not enough digits');
-                    this.shakeRow(this.currentRow);
-                    return;
-                }
-
-                const guess = this.currentGuess.join('');
-                const result = this.checkGuess(guess);
-                
-                // Save guess to history
-                this.guessHistory.push({
-                    digits: guess.split(''),
-                    feedback: result
-                });
-                
-                // Animate tiles
-                await this.revealRow(result);
-                
-                if (guess === this.targetNumber) {
-                    await this.winGame();
-                } else if (this.currentRow === this.MAX_ATTEMPTS - 1) {
-                    await this.loseGame();
-                } else {
-                    this.currentRow++;
-                    this.currentTile = 0;
-                    this.currentGuess = [];
-                }
-                
-                this.saveProgress();
-            }
-
-            checkGuess(guess) {
-                const result = [];
-                const targetDigits = this.targetNumber.split('');
-                const guessDigits = guess.split('');
-                const used = new Array(this.DIGITS).fill(false);
-
-                for (let i = 0; i < this.DIGITS; i++) {
-                    if (guessDigits[i] === targetDigits[i]) {
-                        result[i] = 'correct';
-                        used[i] = true;
-                        this.updateKeyState(guessDigits[i], 'correct');
-                    }
-                }
-
-                for (let i = 0; i < this.DIGITS; i++) {
-                    if (result[i]) continue;
-                    
-                    const targetIndex = targetDigits.findIndex((d, idx) => 
-                        d === guessDigits[i] && !used[idx]
-                    );
-                    
-                    if (targetIndex !== -1) {
-                        result[i] = 'present';
-                        used[targetIndex] = true;
-                        if (this.keyStates[guessDigits[i]] !== 'correct') {
-                            this.updateKeyState(guessDigits[i], 'present');
-                        }
-                    } else {
-                        result[i] = 'absent';
-                        if (!this.keyStates[guessDigits[i]]) {
-                            this.updateKeyState(guessDigits[i], 'absent');
-                        }
-                    }
-                }
-
-                return result;
-            }
-
-            async revealRow(result) {
-                for (let i = 0; i < this.DIGITS; i++) {
-                    await this.sleep(400);
-                    
-                    const tile = this.getTile(this.currentRow, i);
-                    tile.classList.add('reveal');
-                    
-                    await this.sleep(300);
-                    tile.classList.add(result[i]);
-                }
-            }
-
-            updateKeyState(digit, state) {
-                const priority = { correct: 3, present: 2, absent: 1 };
-                const currentState = this.keyStates[digit];
-                
-                if (!currentState || priority[state] > priority[currentState]) {
-                    this.keyStates[digit] = state;
-                    const key = document.querySelector(`[data-key="${digit}"]`);
-                    if (key) {
-                        key.classList.remove('correct', 'present', 'absent');
-                        key.classList.add(state);
-                    }
-                }
-            }
-
-            async winGame() {
-                this.gameState = 'won';
-                
-                for (let i = 0; i < this.DIGITS; i++) {
-                    await this.sleep(100);
-                    const tile = this.getTile(this.currentRow, i);
-                    tile.classList.add('win');
-                }
-                
-                await this.sleep(500);
-                
-                const messages = ['Genius!', 'Magnificent!', 'Impressive!', 'Great!'];
-                this.showMessage(messages[this.currentRow]);
-                
-                this.updateStats(true);
-                this.saveProgress();
-                
-                setTimeout(() => this.showStats(), 2000);
-            }
-
-            async loseGame() {
-                this.gameState = 'lost';
-                
-                await this.sleep(1000);
-                this.showMessage(this.targetNumber);
-                
-                this.updateStats(false);
-                this.saveProgress();
-                
-                setTimeout(() => this.showStats(), 2000);
-            }
-
-            updateStats(won) {
-                const stats = this.loadStats();
-                stats.gamesPlayed++;
-                if (won) {
-                    stats.gamesWon++;
-                    stats.currentStreak++;
-                    stats.maxStreak = Math.max(stats.currentStreak, stats.maxStreak);
-                } else {
-                    stats.currentStreak = 0;
-                }
-                this.saveStats(stats);
-            }
-
-            shakeRow(row) {
-                const rowElement = document.querySelector(`[data-row="${row}"]`);
-                rowElement.classList.add('shake');
-                setTimeout(() => rowElement.classList.remove('shake'), 500);
-            }
-
-            showMessage(text) {
-                const message = document.getElementById('message');
-                message.textContent = text;
-                message.classList.add('show');
-                
-                setTimeout(() => {
-                    message.classList.remove('show');
-                }, 2000);
-            }
-
-            showStats() {
-                this.updateStatsDisplay();
-                document.getElementById('statsOverlay').classList.add('show');
-            }
-
-            hideStats(event) {
-                if (!event || event.target.id === 'statsOverlay') {
-                    document.getElementById('statsOverlay').classList.remove('show');
-                }
-            }
-
-            updateStatsDisplay() {
-                const stats = this.loadStats();
-                document.getElementById('statPlayed').textContent = stats.gamesPlayed;
-                
-                const winPercentage = stats.gamesPlayed > 0 
-                    ? Math.round((stats.gamesWon / stats.gamesPlayed) * 100) 
-                    : 0;
-                document.getElementById('statWin').textContent = winPercentage;
-                
-                document.getElementById('statCurrent').textContent = stats.currentStreak;
-                document.getElementById('statMax').textContent = stats.maxStreak;
-            }
-
-            shareResults() {
-                if (this.gameState === 'playing') return;
-                
-                const today = new Date().toLocaleDateString();
-                let shareText = `Numble ${today}\n`;
-                
-                if (this.gameState === 'won') {
-                    shareText += `${this.currentRow + 1}/${this.MAX_ATTEMPTS}\n\n`;
-                } else {
-                    shareText += `X/${this.MAX_ATTEMPTS}\n\n`;
-                }
-                
-                this.guessHistory.forEach(guess => {
-                    guess.feedback.forEach(state => {
-                        if (state === 'correct') shareText += '🟩';
-                        else if (state === 'present') shareText += '🟨';
-                        else shareText += '⬛';
-                    });
-                    shareText += '\n';
-                });
-                
-                if (navigator.share) {
-                    navigator.share({
-                        text: shareText
-                    }).catch(() => {
-                        this.copyToClipboard(shareText);
-                    });
-                } else {
-                    this.copyToClipboard(shareText);
-                }
-            }
-
-            copyToClipboard(text) {
-                navigator.clipboard.writeText(text).then(() => {
-                    this.showMessage('Copied to clipboard!');
-                });
-            }
-
-            updateCountdown() {
-                const now = new Date();
-                const tomorrow = new Date(now);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                tomorrow.setHours(0, 0, 0, 0);
-                
-                const diff = tomorrow - now;
-                const hours = Math.floor(diff / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                
-                document.getElementById('countdown').textContent = 
-                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            }
-
-            getTile(row, col) {
-                return document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
-            }
-
-            loadStats() {
-                const saved = localStorage.getItem('numbleStats');
-                return saved ? JSON.parse(saved) : {
-                    gamesPlayed: 0,
-                    gamesWon: 0,
-                    currentStreak: 0,
-                    maxStreak: 0
-                };
-            }
-
-            saveStats(stats) {
-                localStorage.setItem('numbleStats', JSON.stringify(stats));
-            }
-
-            sleep(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
+          this.init();
         }
 
-        let game;
-        window.addEventListener('DOMContentLoaded', () => {
-            game = new NumbleGame();
-        });
+        async init() {
+          await this.loadDailyNumber();
+          this.createBoard();
+          this.createKeyboard();
+          this.attachEventListeners();
+          this.updateCountdown();
+          setInterval(() => this.updateCountdown(), 1000);
+
+          // Check if already played today
+          this.checkDailyProgress();
+        }
+
+        async loadDailyNumber() {
+          if (API_URL) {
+            try {
+              const response = await fetch(
+                `${API_URL}/api/daily-number?digits=${this.DIGITS}`
+              );
+              const data = await response.json();
+              this.targetNumber = data.number;
+              this.currentDate = data.date;
+            } catch (error) {
+              console.error(
+                "Failed to fetch from API, using local generation:",
+                error
+              );
+              this.targetNumber = this.getDailyNumberLocal();
+            }
+          } else {
+            this.targetNumber = this.getDailyNumberLocal();
+          }
+
+          console.log("Daily number:", this.targetNumber); // For testing
+        }
+
+        getDailyNumberLocal() {
+          const today = new Date();
+          const seed =
+            today.getFullYear() * 10000 +
+            (today.getMonth() + 1) * 100 +
+            today.getDate();
+
+          const random = (seed) => {
+            const x = Math.sin(seed) * 10000;
+            return x - Math.floor(x);
+          };
+
+          let number = "";
+          for (let i = 0; i < this.DIGITS; i++) {
+            number += Math.floor(random(seed + i) * 10);
+          }
+
+          return number;
+        }
+
+        checkDailyProgress() {
+          const today = new Date().toISOString().split("T")[0];
+          const saved = localStorage.getItem("numbleProgress");
+
+          if (saved) {
+            const progress = JSON.parse(saved);
+            if (progress.date === today && progress.completed) {
+              this.restoreGame(progress);
+            }
+          }
+        }
+
+        restoreGame(progress) {
+          this.gameState = progress.gameState;
+          this.currentRow = progress.currentRow;
+          this.guessHistory = progress.guessHistory || [];
+          this.keyStates = progress.keyStates || {};
+
+          // Restore board state
+          this.guessHistory.forEach((guess, rowIndex) => {
+            for (let i = 0; i < this.DIGITS; i++) {
+              const tile = this.getTile(rowIndex, i);
+              tile.textContent = guess.digits[i];
+              tile.classList.add(guess.feedback[i]);
+            }
+          });
+
+          // Restore keyboard state
+          this.createKeyboard();
+
+          if (this.gameState !== "playing") {
+            setTimeout(() => this.showStats(), 500);
+          }
+        }
+
+        saveProgress() {
+          const today = new Date().toISOString().split("T")[0];
+          const progress = {
+            date: today,
+            gameState: this.gameState,
+            currentRow: this.currentRow,
+            guessHistory: this.guessHistory,
+            keyStates: this.keyStates,
+            completed: this.gameState !== "playing",
+          };
+          localStorage.setItem("numbleProgress", JSON.stringify(progress));
+        }
+
+        createBoard() {
+          const board = document.getElementById("board");
+          board.innerHTML = "";
+
+          for (let i = 0; i < this.MAX_ATTEMPTS; i++) {
+            const row = document.createElement("div");
+            row.className = "row";
+            row.dataset.row = i;
+
+            for (let j = 0; j < this.DIGITS; j++) {
+              const tile = document.createElement("div");
+              tile.className = "tile";
+              tile.dataset.row = i;
+              tile.dataset.col = j;
+              row.appendChild(tile);
+            }
+
+            board.appendChild(row);
+          }
+        }
+
+        createKeyboard() {
+          const keyboard = document.getElementById("keyboard");
+          const layout = [
+            ["1", "2", "3"],
+            ["4", "5", "6"],
+            ["7", "8", "9"],
+            ["ENTER", "0", "DELETE"],
+          ];
+
+          keyboard.innerHTML = "";
+          layout.forEach((row) => {
+            const keyRow = document.createElement("div");
+            keyRow.className = "keyboard-row";
+
+            row.forEach((key) => {
+              const keyElement = document.createElement("button");
+              keyElement.className = "key";
+              keyElement.textContent = key;
+              keyElement.dataset.key = key;
+
+              if (key === "ENTER" || key === "DELETE") {
+                keyElement.classList.add("large");
+              }
+
+              // Apply saved key state
+              if (this.keyStates[key]) {
+                keyElement.classList.add(this.keyStates[key]);
+              }
+
+              keyRow.appendChild(keyElement);
+            });
+
+            keyboard.appendChild(keyRow);
+          });
+        }
+
+        attachEventListeners() {
+          document.getElementById("keyboard").addEventListener("click", (e) => {
+            if (e.target.classList.contains("key")) {
+              this.handleInput(e.target.dataset.key);
+            }
+          });
+
+          document.addEventListener("keydown", (e) => {
+            if (this.gameState !== "playing") return;
+
+            if (e.key >= "0" && e.key <= "9") {
+              this.handleInput(e.key);
+            } else if (e.key === "Backspace") {
+              this.handleInput("DELETE");
+            } else if (e.key === "Enter") {
+              this.handleInput("ENTER");
+            }
+          });
+        }
+
+        handleInput(key) {
+          if (this.gameState !== "playing") return;
+
+          if (key === "ENTER") {
+            this.submitGuess();
+          } else if (key === "DELETE") {
+            this.deleteLast();
+          } else if (this.currentTile < this.DIGITS) {
+            this.addDigit(key);
+          }
+        }
+
+        addDigit(digit) {
+          if (this.currentTile >= this.DIGITS) return;
+
+          const tile = this.getTile(this.currentRow, this.currentTile);
+          tile.textContent = digit;
+          tile.classList.add("filled");
+
+          this.currentGuess.push(digit);
+          this.currentTile++;
+        }
+
+        deleteLast() {
+          if (this.currentTile === 0) return;
+
+          this.currentTile--;
+          const tile = this.getTile(this.currentRow, this.currentTile);
+          tile.textContent = "";
+          tile.classList.remove("filled");
+
+          this.currentGuess.pop();
+        }
+
+        async submitGuess() {
+          if (this.currentTile !== this.DIGITS) {
+            this.showMessage("Not enough digits");
+            this.shakeRow(this.currentRow);
+            return;
+          }
+
+          const guess = this.currentGuess.join("");
+          const result = this.checkGuess(guess);
+
+          // Save guess to history
+          this.guessHistory.push({
+            digits: guess.split(""),
+            feedback: result,
+          });
+
+          // Animate tiles first - show result on board
+          await this.revealRow(result, guess);
+
+          // Then update keyboard colors after row animation is complete
+          await this.updateKeyboardAfterGuess(guess, result);
+
+          if (guess === this.targetNumber) {
+            await this.winGame();
+          } else if (this.currentRow === this.MAX_ATTEMPTS - 1) {
+            await this.loseGame();
+          } else {
+            this.currentRow++;
+            this.currentTile = 0;
+            this.currentGuess = [];
+          }
+
+          this.saveProgress();
+        }
+
+        checkGuess(guess) {
+          const result = [];
+          const targetDigits = this.targetNumber.split("");
+          const guessDigits = guess.split("");
+          const used = new Array(this.DIGITS).fill(false);
+
+          // First pass: correct positions
+          for (let i = 0; i < this.DIGITS; i++) {
+            if (guessDigits[i] === targetDigits[i]) {
+              result[i] = "correct";
+              used[i] = true;
+            }
+          }
+
+          // Second pass: present digits
+          for (let i = 0; i < this.DIGITS; i++) {
+            if (result[i]) continue;
+
+            const targetIndex = targetDigits.findIndex(
+              (d, idx) => d === guessDigits[i] && !used[idx]
+            );
+
+            if (targetIndex !== -1) {
+              result[i] = "present";
+              used[targetIndex] = true;
+            } else {
+              result[i] = "absent";
+            }
+          }
+
+          return result;
+        }
+
+        async revealRow(result, guess) {
+          // Animate tiles one by one
+          for (let i = 0; i < this.DIGITS; i++) {
+            await this.sleep(400);
+
+            const tile = this.getTile(this.currentRow, i);
+            tile.classList.add("reveal");
+
+            await this.sleep(300);
+            tile.classList.add(result[i]);
+          }
+        }
+
+        async updateKeyboardAfterGuess(guess, result) {
+          // Update keyboard colors after the row animation completes
+          const guessDigits = guess.split("");
+
+          for (let i = 0; i < this.DIGITS; i++) {
+            const digit = guessDigits[i];
+            const state = result[i];
+
+            // Update key state with priority
+            const priority = { correct: 3, present: 2, absent: 1 };
+            const currentState = this.keyStates[digit];
+
+            if (!currentState || priority[state] > priority[currentState]) {
+              this.keyStates[digit] = state;
+              const key = document.querySelector(`[data-key="${digit}"]`);
+              if (key) {
+                key.classList.remove("correct", "present", "absent");
+                key.classList.add(state);
+              }
+            }
+          }
+
+          // Small delay to let the keyboard update be visible
+          await this.sleep(200);
+        }
+
+        async winGame() {
+          this.gameState = "won";
+
+          for (let i = 0; i < this.DIGITS; i++) {
+            await this.sleep(100);
+            const tile = this.getTile(this.currentRow, i);
+            tile.classList.add("win");
+          }
+
+          await this.sleep(500);
+
+          const messages = ["Genius!", "Magnificent!", "Impressive!", "Great!"];
+          this.showMessage(messages[this.currentRow]);
+
+          this.updateStats(true);
+          this.saveProgress();
+
+          setTimeout(() => this.showStats(), 2000);
+        }
+
+        async loseGame() {
+          this.gameState = "lost";
+
+          await this.sleep(1000);
+          this.showMessage(this.targetNumber);
+
+          this.updateStats(false);
+          this.saveProgress();
+
+          setTimeout(() => this.showStats(), 2000);
+        }
+
+        updateStats(won) {
+          const stats = this.loadStats();
+          stats.gamesPlayed++;
+          if (won) {
+            stats.gamesWon++;
+            stats.currentStreak++;
+            stats.maxStreak = Math.max(stats.currentStreak, stats.maxStreak);
+          } else {
+            stats.currentStreak = 0;
+          }
+          this.saveStats(stats);
+        }
+
+        shakeRow(row) {
+          const rowElement = document.querySelector(`[data-row="${row}"]`);
+          rowElement.classList.add("shake");
+          setTimeout(() => rowElement.classList.remove("shake"), 500);
+        }
+
+        showMessage(text) {
+          const message = document.getElementById("message");
+          message.textContent = text;
+          message.classList.add("show");
+
+          setTimeout(() => {
+            message.classList.remove("show");
+          }, 2000);
+        }
+
+        showStats() {
+          this.updateStatsDisplay();
+          document.getElementById("statsOverlay").classList.add("show");
+        }
+
+        hideStats(event) {
+          if (!event || event.target.id === "statsOverlay") {
+            document.getElementById("statsOverlay").classList.remove("show");
+          }
+        }
+
+        updateStatsDisplay() {
+          const stats = this.loadStats();
+          document.getElementById("statPlayed").textContent = stats.gamesPlayed;
+
+          const winPercentage =
+            stats.gamesPlayed > 0
+              ? Math.round((stats.gamesWon / stats.gamesPlayed) * 100)
+              : 0;
+          document.getElementById("statWin").textContent = winPercentage;
+
+          document.getElementById("statCurrent").textContent =
+            stats.currentStreak;
+          document.getElementById("statMax").textContent = stats.maxStreak;
+        }
+
+        shareResults() {
+          if (this.gameState === "playing") return;
+
+          const today = new Date().toLocaleDateString();
+          let shareText = `Numble ${today}\n`;
+
+          if (this.gameState === "won") {
+            shareText += `${this.currentRow + 1}/${this.MAX_ATTEMPTS}\n\n`;
+          } else {
+            shareText += `X/${this.MAX_ATTEMPTS}\n\n`;
+          }
+
+          this.guessHistory.forEach((guess) => {
+            guess.feedback.forEach((state) => {
+              if (state === "correct") shareText += "🟩";
+              else if (state === "present") shareText += "🟨";
+              else shareText += "⬛";
+            });
+            shareText += "\n";
+          });
+
+          if (navigator.share) {
+            navigator
+              .share({
+                text: shareText,
+              })
+              .catch(() => {
+                this.copyToClipboard(shareText);
+              });
+          } else {
+            this.copyToClipboard(shareText);
+          }
+        }
+
+        copyToClipboard(text) {
+          navigator.clipboard.writeText(text).then(() => {
+            this.showMessage("Copied to clipboard!");
+          });
+        }
+
+        updateCountdown() {
+          const now = new Date();
+          const tomorrow = new Date(now);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          tomorrow.setHours(0, 0, 0, 0);
+
+          const diff = tomorrow - now;
+          const hours = Math.floor(diff / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+          document.getElementById("countdown").textContent = `${String(
+            hours
+          ).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(
+            seconds
+          ).padStart(2, "0")}`;
+        }
+
+        getTile(row, col) {
+          return document.querySelector(
+            `[data-row="${row}"][data-col="${col}"]`
+          );
+        }
+
+        loadStats() {
+          const saved = localStorage.getItem("numbleStats");
+          return saved
+            ? JSON.parse(saved)
+            : {
+                gamesPlayed: 0,
+                gamesWon: 0,
+                currentStreak: 0,
+                maxStreak: 0,
+              };
+        }
+
+        saveStats(stats) {
+          localStorage.setItem("numbleStats", JSON.stringify(stats));
+        }
+
+        sleep(ms) {
+          return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+      }
+
+      let game;
+      window.addEventListener("DOMContentLoaded", () => {
+        game = new NumbleGame();
+      });
     </script>
-</body>
+  </body>
 </html>
