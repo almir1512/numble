@@ -528,6 +528,8 @@
           } else {
             this.targetNumber = this.getDailyNumberLocal();
           }
+
+          console.log("Daily number:", this.targetNumber); // For testing
         }
 
         getDailyNumberLocal() {
@@ -725,8 +727,11 @@
             feedback: result,
           });
 
-          // Animate tiles
-          await this.revealRow(result);
+          // Animate tiles first - show result on board
+          await this.revealRow(result, guess);
+
+          // Then update keyboard colors after row animation is complete
+          await this.updateKeyboardAfterGuess(guess, result);
 
           if (guess === this.targetNumber) {
             await this.winGame();
@@ -747,14 +752,15 @@
           const guessDigits = guess.split("");
           const used = new Array(this.DIGITS).fill(false);
 
+          // First pass: correct positions
           for (let i = 0; i < this.DIGITS; i++) {
             if (guessDigits[i] === targetDigits[i]) {
               result[i] = "correct";
               used[i] = true;
-              this.updateKeyState(guessDigits[i], "correct");
             }
           }
 
+          // Second pass: present digits
           for (let i = 0; i < this.DIGITS; i++) {
             if (result[i]) continue;
 
@@ -765,21 +771,16 @@
             if (targetIndex !== -1) {
               result[i] = "present";
               used[targetIndex] = true;
-              if (this.keyStates[guessDigits[i]] !== "correct") {
-                this.updateKeyState(guessDigits[i], "present");
-              }
             } else {
               result[i] = "absent";
-              if (!this.keyStates[guessDigits[i]]) {
-                this.updateKeyState(guessDigits[i], "absent");
-              }
             }
           }
 
           return result;
         }
 
-        async revealRow(result) {
+        async revealRow(result, guess) {
+          // Animate tiles one by one
           for (let i = 0; i < this.DIGITS; i++) {
             await this.sleep(400);
 
@@ -791,18 +792,30 @@
           }
         }
 
-        updateKeyState(digit, state) {
-          const priority = { correct: 3, present: 2, absent: 1 };
-          const currentState = this.keyStates[digit];
+        async updateKeyboardAfterGuess(guess, result) {
+          // Update keyboard colors after the row animation completes
+          const guessDigits = guess.split("");
 
-          if (!currentState || priority[state] > priority[currentState]) {
-            this.keyStates[digit] = state;
-            const key = document.querySelector(`[data-key="${digit}"]`);
-            if (key) {
-              key.classList.remove("correct", "present", "absent");
-              key.classList.add(state);
+          for (let i = 0; i < this.DIGITS; i++) {
+            const digit = guessDigits[i];
+            const state = result[i];
+
+            // Update key state with priority
+            const priority = { correct: 3, present: 2, absent: 1 };
+            const currentState = this.keyStates[digit];
+
+            if (!currentState || priority[state] > priority[currentState]) {
+              this.keyStates[digit] = state;
+              const key = document.querySelector(`[data-key="${digit}"]`);
+              if (key) {
+                key.classList.remove("correct", "present", "absent");
+                key.classList.add(state);
+              }
             }
           }
+
+          // Small delay to let the keyboard update be visible
+          await this.sleep(200);
         }
 
         async winGame() {
