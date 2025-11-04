@@ -606,7 +606,7 @@
             ["1", "2", "3"],
             ["4", "5", "6"],
             ["7", "8", "9"],
-            ["ENTER", "0", "🔙"],
+            ["ENTER", "0", "⌫"],
           ];
 
           keyboard.innerHTML = "";
@@ -620,7 +620,7 @@
               keyElement.textContent = key;
               keyElement.dataset.key = key;
 
-              if (key === "ENTER" || key === "🔙") {
+              if (key === "ENTER" || key === "⌫") {
                 keyElement.classList.add("large");
               }
 
@@ -649,7 +649,7 @@
             if (e.key >= "0" && e.key <= "9") {
               this.handleInput(e.key);
             } else if (e.key === "Backspace") {
-              this.handleInput("🔙");
+              this.handleInput("⌫");
             } else if (e.key === "Enter") {
               this.handleInput("ENTER");
             }
@@ -661,7 +661,7 @@
 
           if (key === "ENTER") {
             this.submitGuess();
-          } else if (key === "🔙") {
+          } else if (key === "⌫") {
             this.deleteLast();
           } else if (this.currentTile < this.DIGITS) {
             this.addDigit(key);
