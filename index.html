@@ -309,13 +309,6 @@
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
       }
 
-      .stats-title {
-        font-size: 20px;
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 24px;
-      }
-
       .stats-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -416,14 +409,6 @@
       <div class="header">
         <h1>NUMBLE</h1>
         <p>Guess the 4-digit number</p>
-        <div class="menu-icon" onclick="game.showStats()">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <rect x="3" y="3" width="7" height="7" />
-            <rect x="14" y="3" width="7" height="7" />
-            <rect x="14" y="14" width="7" height="7" />
-            <rect x="3" y="14" width="7" height="7" />
-          </svg>
-        </div>
       </div>
 
       <div class="game-section">
@@ -492,6 +477,7 @@
 
         async loadDailyNumber() {
           if (API_URL) {
+            // backend mode exists
             try {
               const response = await fetch(
                 `${API_URL}/api/daily-number?digits=${this.DIGITS}`
@@ -606,7 +592,7 @@
             ["1", "2", "3"],
             ["4", "5", "6"],
             ["7", "8", "9"],
-            ["ENTER", "0", "DELETE"],
+            ["ENTER", "0", "🔙"],
           ];
 
           keyboard.innerHTML = "";
@@ -811,7 +797,7 @@
           const messages = ["Genius!", "Magnificent!", "Impressive!", "Great!"];
           this.showMessage(messages[this.currentRow]);
 
-          this.updateStats(true);
+          //   this.updateStats(true);
           this.saveProgress();
 
           setTimeout(() => this.showStats(), 2000);
@@ -823,24 +809,24 @@
           await this.sleep(1000);
           this.showMessage(this.targetNumber);
 
-          this.updateStats(false);
+          //   this.updateStats(false);
           this.saveProgress();
 
           setTimeout(() => this.showStats(), 2000);
         }
 
-        updateStats(won) {
-          const stats = this.loadStats();
-          stats.gamesPlayed++;
-          if (won) {
-            stats.gamesWon++;
-            stats.currentStreak++;
-            stats.maxStreak = Math.max(stats.currentStreak, stats.maxStreak);
-          } else {
-            stats.currentStreak = 0;
-          }
-          this.saveStats(stats);
-        }
+        // updateStats(won) {
+        //   const stats = this.loadStats();
+        //   stats.gamesPlayed++;
+        //   if (won) {
+        //     stats.gamesWon++;
+        //     stats.currentStreak++;
+        //     stats.maxStreak = Math.max(stats.currentStreak, stats.maxStreak);
+        //   } else {
+        //     stats.currentStreak = 0;
+        //   }
+        //   this.saveStats(stats);
+        // }
 
         shakeRow(row) {
           const rowElement = document.querySelector(`[data-row="${row}"]`);
@@ -859,7 +845,7 @@
         }
 
         showStats() {
-          this.updateStatsDisplay();
+          //   this.updateStatsDisplay();
           document.getElementById("statsOverlay").classList.add("show");
         }
 
@@ -869,20 +855,20 @@
           }
         }
 
-        updateStatsDisplay() {
-          const stats = this.loadStats();
-          document.getElementById("statPlayed").textContent = stats.gamesPlayed;
+        // updateStatsDisplay() {
+        //   const stats = this.loadStats();
+        //   document.getElementById("statPlayed").textContent = stats.gamesPlayed;
 
-          const winPercentage =
-            stats.gamesPlayed > 0
-              ? Math.round((stats.gamesWon / stats.gamesPlayed) * 100)
-              : 0;
-          document.getElementById("statWin").textContent = winPercentage;
+        //   const winPercentage =
+        //     stats.gamesPlayed > 0
+        //       ? Math.round((stats.gamesWon / stats.gamesPlayed) * 100)
+        //       : 0;
+        //   document.getElementById("statWin").textContent = winPercentage;
 
-          document.getElementById("statCurrent").textContent =
-            stats.currentStreak;
-          document.getElementById("statMax").textContent = stats.maxStreak;
-        }
+        //   document.getElementById("statCurrent").textContent =
+        //     stats.currentStreak;
+        //   document.getElementById("statMax").textContent = stats.maxStreak;
+        // }
 
         shareResults() {
           if (this.gameState === "playing") return;
@@ -948,17 +934,17 @@
           );
         }
 
-        loadStats() {
-          const saved = localStorage.getItem("numbleStats");
-          return saved
-            ? JSON.parse(saved)
-            : {
-                gamesPlayed: 0,
-                gamesWon: 0,
-                currentStreak: 0,
-                maxStreak: 0,
-              };
-        }
+        // loadStats() {
+        //   const saved = localStorage.getItem("numbleStats");
+        //   return saved
+        //     ? JSON.parse(saved)
+        //     : {
+        //         gamesPlayed: 0,
+        //         gamesWon: 0,
+        //         currentStreak: 0,
+        //         maxStreak: 0,
+        //       };
+        // }
 
         saveStats(stats) {
           localStorage.setItem("numbleStats", JSON.stringify(stats));
